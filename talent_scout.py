@@ -1,23 +1,14 @@
 import os
 import pandas as pd
 import numpy as np
-from dotenv import load_dotenv # Make sure python-dotenv is installed
+from dotenv import load_dotenv
 import sys
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
-import time # For API rate limiting if needed
+import time
 
 # --- 0. Configuration & Setup ---
-# ========================================================================================
-# IMPORTANT:
-# 1. Create a file named `.env` in the same directory as this script.
-#    Inside `.env`, add: BALLDONTLIE_API_KEY="YOUR_ACTUAL_API_KEY_HERE"
-#    Replace YOUR_ACTUAL_API_KEY_HERE with your real key.
-# 2. Ensure your 'src' folder (containing client.py) is accessible.
-#    The path below assumes 'src' is a sibling directory to this script.
-#    Adjust 'sys.path.append' if your 'src' folder is elsewhere.
-# ========================================================================================
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,7 +19,6 @@ if not API_KEY:
     print("Please create a .env file in the same directory as this script with: BALLDONTLIE_API_KEY=\"YOUR_API_KEY\"")
     sys.exit(1)
 
-# Add the 'src' directory to Python's path to import SportsClient
 script_dir = os.path.dirname(__file__)
 src_path = os.path.join(script_dir, 'src')
 if os.path.exists(src_path):
@@ -39,7 +29,6 @@ else:
     sys.exit(1)
 
 try:
-    # Import SportsClient as defined in your client.py
     from client import SportsClient
 except ImportError:
     print("Error: Could not import SportsClient from 'src/client.py'.")
@@ -209,9 +198,6 @@ print("\n--- 2. Data Preprocessing ---")
 # --- CUSTOMIZATION POINT 1: Verify Column Names from your API Response ---
 # These are based on the Balldontlie EPL API documentation for 'player' and 'season_stats'
 PLAYER_NAME_COL = "name" # From /players endpoint
-# CLUB_NAME_COL: Team name is not directly returned with player info or season stats in this API.
-# It requires fetching teams via client.epl.teams.get_all() and merging based on 'team_ids'.
-# For now, we'll assign N/A or you can implement team fetching and merging if critical for display.
 CLUB_NAME_COL = "team_name_placeholder" # Placeholder that will be N/A unless merged
 
 MINUTES_PLAYED_COL = "mins_played" # Confirmed in /players/:id/season_stats
@@ -260,7 +246,6 @@ METRICS_TO_CONVERT_TO_P90 = {
     "total_scoring_att": "Shots_P90",
     "total_offside": "Offsides_P90",
     "touches": "Touches_P90",
-    # Assuming these are available as stat names from the /season_stats endpoint based on 'game_stats' list in API docs.
     "interception": "Interceptions_P90",
     "accurate_pass": "Accurate_Passes_P90",
     "big_chance_created": "Big_Chance_Created_P90",
